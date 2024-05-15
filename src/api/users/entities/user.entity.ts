@@ -18,5 +18,5 @@ export class User extends AbstractEntity<User> {
     createdAt: Date;
 
     @OneToMany(() => ActivityUser, (activityUser) => activityUser.users)
-    public activityUser: ActivityUser[]
+    public activityUser?: ActivityUser[]
 }

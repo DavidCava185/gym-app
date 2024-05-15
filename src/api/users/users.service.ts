@@ -17,22 +17,22 @@ export class UsersService {
       createdAt: new Date(),
     }
     
-    return this.usersRepository.create(user);
+    return this.usersRepository.createUser(user);
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.usersRepository.findAllUsers({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(filters: object) {
+    return this.usersRepository.findUser(filters);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(filters: object, updateUserDto: UpdateUserDto) {
+    return this.usersRepository.updateUser(filters, updateUserDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.usersRepository.removeUser(id);
   }
 }
