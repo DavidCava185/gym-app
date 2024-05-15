@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { TrainersService } from './trainers.service';
 import { CreateTrainerDto } from './dto/create-trainer.dto';
 import { UpdateTrainerDto } from './dto/update-trainer.dto';
+import { AssignTrainerActivitiesDto } from './dto/assign-trainer-activity.dto';
 
 @Controller('trainers')
 export class TrainersController {
@@ -19,16 +20,21 @@ export class TrainersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.trainersService.findOne(+id);
+    return this.trainersService.findOne({ where: {id: +id}});
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateTrainerDto: UpdateTrainerDto) {
-    return this.trainersService.update(+id, updateTrainerDto);
+    return this.trainersService.update(+id, undefined, updateTrainerDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.trainersService.remove(+id);
+  }
+
+  @Post(':id/assign-activities')
+  assignActivities(@Param('id') id: string, @Body() assignTrainerActivitiesDto: AssignTrainerActivitiesDto) {
+    return this.trainersService.assignActivities(+id, assignTrainerActivitiesDto);
   }
 }

@@ -1,6 +1,6 @@
-import { ActivityUser } from "src/api/activities/entities/activity-user.entity";
+import { Activity } from "src/api/activities/entities/activity.entity";
 import { AbstractEntity } from "src/database/abstract.entity";
-import { Entity, Column, Unique, OneToMany } from "typeorm";
+import { Entity, Column, Unique, OneToMany, ManyToMany, JoinTable } from "typeorm";
 
 @Entity()
 export class User extends AbstractEntity<User> {
@@ -15,8 +15,22 @@ export class User extends AbstractEntity<User> {
     email: string;
 
     @Column()
+    password: string;
+
+    @Column()
     createdAt: Date;
 
-    @OneToMany(() => ActivityUser, (activityUser) => activityUser.users)
-    public activityUser?: ActivityUser[]
+    @ManyToMany(() => Activity)
+    @JoinTable({
+        name: "activity_user",
+        joinColumn: {
+            name: "activity",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "user",
+            referencedColumnName: "id"
+        },
+    })
+    public activities?: Activity[];
 }

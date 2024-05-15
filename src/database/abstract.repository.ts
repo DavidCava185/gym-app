@@ -8,12 +8,7 @@ export abstract class AbstractRepository<T extends AbstractEntity<T>> {
   ) {}
 
   async create(entity: EntityTarget<T>, data: T): Promise<T> {
-    try {
-      return await this.repository.manager.create(entity);
-    } catch (error) {
-      console.error('Error creating entity', error);
-      throw error;
-    }
+    return this.repository.manager.create('user', data);
   }
 
   async find(entity: EntityTarget<T>, options: FindManyOptions<T>): Promise<T[]> {

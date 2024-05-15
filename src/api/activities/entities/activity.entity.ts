@@ -1,10 +1,8 @@
+import { ActivityType } from "src/api/activity-types/entities/activity-type.entity";
+import { Room } from "src/api/rooms/entities/room.entity";
 import { Trainer } from "src/api/trainers/entities/trainer.entity";
 import { AbstractEntity } from "src/database/abstract.entity";
-import { Entity, Column, Unique, ManyToMany, OneToMany, ManyToOne } from "typeorm";
-import { ActivityTrainer } from "./activity-trainer.entity";
-import { ActivityUser } from "./activity-user.entity";
-import { ActivityType } from "src/api/activity-type/entities/activity-type.entity";
-import { Room } from 'src/api/rooms/entities/room.entity';
+import { Entity, Column, Unique, OneToMany, ManyToMany, JoinTable, ManyToOne } from "typeorm";
 
 @Entity()
 export class Activity extends AbstractEntity<Activity> {
@@ -12,32 +10,23 @@ export class Activity extends AbstractEntity<Activity> {
     name: string;
 
     @Column()  
-    estimatedDuration: string;
-
-    @Column()
     description: string;
 
-    @Column()
+    @Column()  
+    estimatedDuration: string;
+
+    @Column()  
     startDatetime: Date;
-   
+
     @Column()
     finishDatetime: Date;
 
-    @Column()
-    activityTypeId: number;
-
-    @Column()
-    roomId: number;
-
-    @OneToMany(() => ActivityTrainer, (activityTrainer) => activityTrainer.trainers)
-    public activityTrainer: ActivityTrainer[]
-
-    @OneToMany(() => ActivityUser, (activityUser) => activityUser.users)
-    public activityUser: ActivityUser[]
+    @ManyToOne(() => Room, (room) => room.activities)
+    room: Room;
 
     @ManyToOne(() => ActivityType, (activityType) => activityType.activities)
-    public type: ActivityType
+    activityType: ActivityType;
 
-    @ManyToOne(() => Room, (room) => room.activities)
-    public room: Room
+    @ManyToMany(() => Trainer, trainer => trainer.activities)
+    trainers: Trainer[];
 }

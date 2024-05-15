@@ -1,6 +1,6 @@
-import { ActivityTrainer } from "src/api/activities/entities/activity-trainer.entity";
+import { Activity } from "src/api/activities/entities/activity.entity";
 import { AbstractEntity } from "src/database/abstract.entity";
-import { Entity, Column, Unique, ManyToMany, OneToMany } from "typeorm";
+import { Entity, Column, Unique, OneToMany, ManyToMany, JoinTable } from "typeorm";
 
 @Entity()
 export class Trainer extends AbstractEntity<Trainer> {
@@ -11,14 +11,19 @@ export class Trainer extends AbstractEntity<Trainer> {
     surname: string;
 
     @Column()
+    @Unique(['email'])
+    email: string;
+
+    @Column()
     phone: string;
 
     @Column()
-    email: string;
-   
-    @Column()
     address: string;
 
-    @OneToMany(() => ActivityTrainer, (activityTrainer) => activityTrainer.trainers)
-    public activityTrainer: ActivityTrainer[]
+    @Column()
+    password: string;
+
+    @ManyToMany(() => Activity, activity => activity.trainers, { cascade: true })
+    @JoinTable()
+    public activities?: Activity[];
 }

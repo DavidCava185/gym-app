@@ -2,6 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
+import { Activity } from 'src/api/activities/entities/activity.entity';
+import { ActivityType } from 'src/api/activity-types/entities/activity-type.entity';
+import { Room } from 'src/api/rooms/entities/room.entity';
+import { Trainer } from 'src/api/trainers/entities/trainer.entity';
 import { User } from 'src/api/users/entities/user.entity';
 
 @Module({
@@ -15,7 +19,7 @@ import { User } from 'src/api/users/entities/user.entity';
         username: configService.getOrThrow('DB_USER'),
         password: configService.getOrThrow('DB_PASSWORD'),
         synchronice: 'true',
-        entities: [User],
+        entities: [User, Activity, Trainer, ActivityType, Room],
       }),
       inject: [ConfigService],
     })

@@ -1,38 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UsersRepository } from './users.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository){}
-  create(createUserDto: CreateUserDto): Promise<User> {
-    let user: User;
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-    user = {
-      name: createUserDto.name,
-      surname: createUserDto.surname,
-      email: createUserDto.email,
-      createdAt: new Date(),
+  create(createUserDto: any): Promise<User[]> {
+    const user = this.usersRepository.create(createUserDto);
+    return this.usersRepository.save(user);
+  }
+
+  findAll(): Promise<User[]> {
+    return this.usersRepository.find();
+  }
+
+  findOne(filters?: FindOneOptions): Promise<User> {
+    let findOneFilters: FindOneOptions;
+
+    if (!filters.where) {
+      findOneFilters =  {
+        where: {
+          ...filters,
+        },
+      }
+    } else {
+      findOneFilters = filters
     }
-    
-    return this.usersRepository.createUser(user);
+
+
+    return this.usersRepository.findOneOrFail(findOneFilters);
   }
 
-  findAll() {
-    return this.usersRepository.findAllUsers({});
+  async update(id: number, filters: FindOneOptions, updateUserDto: any): Promise<void> {
+    this.usersRepository.update(id, updateUserDto);
   }
 
-  findOne(filters: object) {
-    return this.usersRepository.findUser(filters);
-  }
-
-  update(filters: object, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.updateUser(filters, updateUserDto);
-  }
-
-  remove(id: number) {
-    return this.usersRepository.removeUser(id);
+  async remove(id: number): Promise<void> {
+    await this.usersRepository.delete(id);
   }
 }
