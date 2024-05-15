@@ -20,17 +20,7 @@ export class User extends AbstractEntity<User> {
     @Column()
     createdAt: Date;
 
-    @ManyToMany(() => Activity)
-    @JoinTable({
-        name: "activity_user",
-        joinColumn: {
-            name: "activity",
-            referencedColumnName: "id"
-        },
-        inverseJoinColumn: {
-            name: "user",
-            referencedColumnName: "id"
-        },
-    })
+    @ManyToMany(() => Activity, activity => activity.users, { cascade: true })
+    @JoinTable()
     public activities?: Activity[];
 }

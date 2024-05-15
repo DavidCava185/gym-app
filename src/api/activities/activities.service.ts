@@ -41,6 +41,7 @@ export class ActivitiesService {
         room: true,
         activityType: true,
         trainers: true,
+        users: true,
       },
       where: filters,
     });
@@ -59,8 +60,15 @@ export class ActivitiesService {
       findOneFilters = filters
     }
 
+    findOneFilters.relations = {
+      room: true,
+      activityType: true,
+      trainers: true,
+      users: true,
+    };
 
-    return this.activitiesRepository.findOneOrFail(findOneFilters);
+
+    return this.activitiesRepository.findOne(findOneFilters);
   }
 
   async update(id: number, filters: FindOneOptions, updateActivityDto: any): Promise<void> {

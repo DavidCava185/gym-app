@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { ActivitiesService } from '../activities/activities.service';
+import { AssignUserActivitiesDto } from './dto/assign-user-activity.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private activitiesService: ActivitiesService,
   ) {}
 
   create(createUserDto: any): Promise<User[]> {
@@ -33,7 +36,7 @@ export class UsersService {
     }
 
 
-    return this.usersRepository.findOneOrFail(findOneFilters);
+    return this.usersRepository.findOne(findOneFilters);
   }
 
   async update(id: number, filters: FindOneOptions, updateUserDto: any): Promise<void> {
@@ -42,5 +45,20 @@ export class UsersService {
 
   async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
+  }
+
+  async assignActivities(id: number, assignUserActivitiesDto: AssignUserActivitiesDto) {
+    const user: User = await this.findOne({
+      where: {
+        id,
+      }
+    });
+    const activities: any[] = await this.activitiesService.findAll({
+      id: assignUserActivitiesDto.activityIds,
+    });
+    user.activities = activities;
+
+
+    await this.usersRepository.save(user);
   }
 }

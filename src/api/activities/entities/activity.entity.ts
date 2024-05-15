@@ -1,6 +1,7 @@
 import { ActivityType } from "src/api/activity-types/entities/activity-type.entity";
 import { Room } from "src/api/rooms/entities/room.entity";
 import { Trainer } from "src/api/trainers/entities/trainer.entity";
+import { User } from "src/api/users/entities/user.entity";
 import { AbstractEntity } from "src/database/abstract.entity";
 import { Entity, Column, Unique, OneToMany, ManyToMany, JoinTable, ManyToOne } from "typeorm";
 
@@ -29,4 +30,7 @@ export class Activity extends AbstractEntity<Activity> {
 
     @ManyToMany(() => Trainer, trainer => trainer.activities)
     trainers: Trainer[];
+
+    @ManyToMany(() => User, user => user.activities)
+    users: User[];
 }

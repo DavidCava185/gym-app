@@ -1,7 +1,7 @@
 import { ActivitiesService } from './../activities/activities.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsWhere, In, Repository } from 'typeorm';
 import { Trainer } from './entities/trainer.entity';
 import { AssignTrainerActivitiesDto } from './dto/assign-trainer-activity.dto';
 
@@ -18,8 +18,13 @@ export class TrainersService {
     return this.trainersRepository.save(trainer);
   }
 
-  findAll(): Promise<Trainer[]> {
-    return this.trainersRepository.find();
+  findAll(filters?: object): Promise<Trainer[]> {
+    return this.trainersRepository.find({
+      relations: {
+        activities: true,
+      },
+      where: filters,
+    });
   }
 
   findOne(filters?: FindOneOptions): Promise<Trainer> {
@@ -58,11 +63,10 @@ export class TrainersService {
       }
     });
     const activities: any[] = await this.activitiesService.findAll({
-      id: assignTrainerActivitiesDto.activityIds,
+      id: In(assignTrainerActivitiesDto.activityIds),
     });
+    console.log('trainer');
     trainer.activities = activities;
-
-
-    this.trainersRepository.save(trainer);
+    await this.trainersRepository.save(trainer);
   }
 }
