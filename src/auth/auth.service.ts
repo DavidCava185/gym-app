@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { LoginDto } from './dto/login.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/api/users/entities/user.entity';
+import { Trainer } from 'src/api/trainers/entities/trainer.entity';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+    @InjectRepository(Trainer)
+    private trainersRepository: Repository<Trainer>,
+  ) {}
+  async login(loginDto: LoginDto): Promise<User | boolean> {
+    let user: User | boolean;
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+    user = await this.usersRepository.findOne(
+      { 
+        where: {
+          email: loginDto.email,
+          password: loginDto.password
+        }
+       }
+    )
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    if (!user) {
+      user = false;
+    }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+    return user;
   }
+  async loginTrainer(loginDto: LoginDto): Promise<Trainer | boolean> {
+    let trainer: Trainer | boolean;
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    trainer = await this.trainersRepository.findOne(
+      { 
+        where: {
+          email: loginDto.email,
+          password: loginDto.password
+        }
+       }
+    )
+
+    if (!trainer) {
+      trainer = false;
+    }
+    
+
+    return trainer;
   }
 }

@@ -10,5 +10,6 @@ import { ActivitiesModule } from '../activities/activities.module';
   imports: [DatabaseModule, DatabaseModule.forFeature([User]), ActivitiesModule],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: []
 })
 export class UsersModule {}
