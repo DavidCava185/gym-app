@@ -31,4 +31,9 @@ export class ActivitiesController {
   remove(@Param('id') id: string) {
     return this.activitiesService.remove(+id);
   }
+
+  @Post('/:activityId/user/:userId')
+  relateActivityToUser(@Param('activityId') activityId: string, @Param('userId') userId: string) {
+    return this.activitiesService.relateToUser(+activityId, +userId);
+  }
 }

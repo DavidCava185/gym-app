@@ -65,7 +65,6 @@ export class TrainersService {
     const activities: any[] = await this.activitiesService.findAll({
       id: In(assignTrainerActivitiesDto.activityIds),
     });
-    console.log('trainer');
     trainer.activities = activities;
     await this.trainersRepository.save(trainer);
   }

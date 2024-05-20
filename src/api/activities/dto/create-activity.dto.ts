@@ -32,5 +32,8 @@ export class CreateActivityDto {
     @IsOptional()
     @IsNumber()
     activityTypeId: number;
+
+    @IsNotEmpty()
+    trainerId: number;
 }
     

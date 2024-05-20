@@ -1,6 +1,6 @@
 import { UsersService } from './../users/users.service';
 import { TrainersService } from './../trainers/trainers.service';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { Activity } from './entities/activity.entity';
@@ -15,9 +15,11 @@ export class ActivitiesService {
     private activitiesRepository: Repository<Activity>,
     private roomsService: RoomsService,
     private activityTypesService: ActivityTypesService,
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
   ) {}
 
-  async create(createActivityDto: any): Promise<Activity[]> {
+  async create(createActivityDto: any): Promise<Activity> {
     
     if (createActivityDto) {
       createActivityDto.createdAt = new Date();
@@ -31,7 +33,8 @@ export class ActivitiesService {
     delete createActivityDto.activityTypeId;
     createActivityDto.activityType = activityType;
     
-    const activity = this.activitiesRepository.create(createActivityDto);
+    const activity: any = this.activitiesRepository.create(createActivityDto);
+    
     return this.activitiesRepository.save(activity);
   }
 
@@ -77,5 +80,15 @@ export class ActivitiesService {
 
   async remove(id: number): Promise<void> {
     await this.activitiesRepository.delete(id);
+  }
+
+  async relateToUser(activityId: number, userId: number): Promise<Activity> {
+    const activity = await this.findOne({where: {id: activityId}});
+
+    const user = await this.usersService.findOne({where: {id: userId}});
+
+    activity.users.push(user);
+
+    return this.activitiesRepository.save(activity);
   }
 }

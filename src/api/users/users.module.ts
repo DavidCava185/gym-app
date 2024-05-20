@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { DatabaseModule } from '../../database/database.module';
@@ -7,9 +7,9 @@ import { ActivitiesModule } from '../activities/activities.module';
 
 
 @Module({
-  imports: [DatabaseModule, DatabaseModule.forFeature([User]), ActivitiesModule],
+  imports: [DatabaseModule, DatabaseModule.forFeature([User]), forwardRef(() => ActivitiesModule)],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: []
+  exports: [UsersService],
 })
 export class UsersModule {}
