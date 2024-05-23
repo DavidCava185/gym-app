@@ -26,14 +26,21 @@ export class ActivitiesService {
     }
 
     if (!!createActivityDto.roomId) {
-      const room = await this.roomsService.findOne({where: { id: createActivityDto.roomId }});
+      const room = await this.roomsService.findOne({
+        where: {
+          id: createActivityDto.roomId,
+        }
+      });
       delete createActivityDto.roomId;
       createActivityDto.room = room;
     }
 
 
     if (!!createActivityDto.activityTypeId) {
-      const activityType = await this.activityTypesService.findOne(createActivityDto.activityTypeId);
+      const activityType = await this.activityTypesService.findOne({
+      where: {
+        id: createActivityDto.activityTypeId
+      }});
       delete createActivityDto.activityTypeId;
       createActivityDto.activityType = activityType;
     }
@@ -52,6 +59,9 @@ export class ActivitiesService {
         users: true,
       },
       where: filters,
+      order: {
+        startDatetime: 'DESC',
+      }
     });
   }
 
@@ -80,7 +90,27 @@ export class ActivitiesService {
   }
 
   async update(id: number, filters: FindOneOptions, updateActivityDto: any): Promise<void> {
-    this.activitiesRepository.update(id, updateActivityDto);
+    if (!!updateActivityDto.roomId) {
+      const room = await this.roomsService.findOne({
+        where: {
+          id: updateActivityDto.roomId,
+        }
+      });
+      delete updateActivityDto.roomId;
+      updateActivityDto.room = room;
+    }
+
+
+    if (!!updateActivityDto.activityTypeId) {
+      const activityType = await this.activityTypesService.findOne({
+        where: {
+          id: updateActivityDto.activityTypeId
+        }});
+      delete updateActivityDto.activityTypeId;
+      updateActivityDto.activityType = activityType;
+    }
+
+    await this.activitiesRepository.update(id, updateActivityDto);
   }
 
   async remove(id: number): Promise<void> {

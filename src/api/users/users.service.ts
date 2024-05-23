@@ -40,7 +40,7 @@ export class UsersService {
   }
 
   async update(id: number, filters: FindOneOptions, updateUserDto: any): Promise<void> {
-    this.usersRepository.update(id, updateUserDto);
+    await this.usersRepository.update(id, updateUserDto);
   }
 
   async remove(id: number): Promise<void> {

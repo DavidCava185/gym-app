@@ -49,7 +49,7 @@ export class TrainersService {
   }
 
   async update(id: number, filters: FindOneOptions, updateTrainerDto: any): Promise<void> {
-    this.trainersRepository.update(id, updateTrainerDto);
+    await this.trainersRepository.update(id, updateTrainerDto);
   }
 
   async remove(id: number): Promise<void> {

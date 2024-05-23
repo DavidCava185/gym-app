@@ -11,10 +11,6 @@ export class CreateActivityDto {
 
     @IsOptional()
     @IsString()
-    surname?: string;
-
-    @IsOptional()
-    @IsString()
     estimatedDuration?: string;
 
     @IsOptional()
