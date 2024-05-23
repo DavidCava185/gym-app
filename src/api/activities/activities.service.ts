@@ -25,13 +25,18 @@ export class ActivitiesService {
       createActivityDto.createdAt = new Date();
     }
 
-    const room = await this.roomsService.findOne(createActivityDto.roomId);
-    delete createActivityDto.roomId;
-    createActivityDto.room = room;
+    if (!!createActivityDto.roomId) {
+      const room = await this.roomsService.findOne({where: { id: createActivityDto.roomId }});
+      delete createActivityDto.roomId;
+      createActivityDto.room = room;
+    }
 
-    const activityType = await this.activityTypesService.findOne(createActivityDto.activityTypeId);
-    delete createActivityDto.activityTypeId;
-    createActivityDto.activityType = activityType;
+
+    if (!!createActivityDto.activityTypeId) {
+      const activityType = await this.activityTypesService.findOne(createActivityDto.activityTypeId);
+      delete createActivityDto.activityTypeId;
+      createActivityDto.activityType = activityType;
+    }
     
     const activity: any = this.activitiesRepository.create(createActivityDto);
     

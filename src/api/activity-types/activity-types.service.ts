@@ -22,7 +22,7 @@ export class ActivityTypesService {
   findOne(filters?: FindOneOptions): Promise<ActivityType> {
     let findOneFilters: FindOneOptions;
 
-    if (!filters.where) {
+    if (!filters?.where) {
       findOneFilters =  {
         where: {
           ...filters,
